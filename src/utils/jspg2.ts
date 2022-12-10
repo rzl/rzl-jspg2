@@ -4,9 +4,9 @@ import { getValidFullRange } from './host';
 import logger from "./logger";
 import { reportError, reportInfo } from './report';
 
-export const codeReg = /(?<=\/\*\*\*\*\*jspg2 code start jspg2\*\*\*\*\*\/\s*\n)[\s\S]+(?=\s+\/\*\*\*\*\*jspg2 code end jspg2\*\*\*\*\*\/)/gi;
-export const listReg = /(?<=\/\*\*\*\*\*jspg2 list start jspg2\*\*\*\*\*\/\s*\n)[\s\S]+(?=\s+\/\*\*\*\*\*jspg2 list end jspg2\*\*\*\*\*\/)/gi;
-export const formReg = /(?<=\/\*\*\*\*\*jspg2 form start jspg2\*\*\*\*\*\/\s*\n)[\s\S]+(?=\s+\/\*\*\*\*\*jspg2 form end jspg2\*\*\*\*\*\/)/gi;
+export const codeReg = /(?<=\/\*\*\*\*\*jspg2 code start jspg2\*\*\*\*\*\/\s*\n)[\s\S]+(?=\n\s*\/\*\*\*\*\*jspg2 code end jspg2\*\*\*\*\*\/)/gi;
+export const listReg = /(?<=\/\*\*\*\*\*jspg2 list start jspg2\*\*\*\*\*\/\s*\n)[\s\S]+(?=\n\s*\/\*\*\*\*\*jspg2 list end jspg2\*\*\*\*\*\/)/gi;
+export const formReg = /(?<=\/\*\*\*\*\*jspg2 form start jspg2\*\*\*\*\*\/\s*\n)[\s\S]+(?=\n\s*\/\*\*\*\*\*jspg2 form end jspg2\*\*\*\*\*\/)/gi;
 
 export function resolveCode(text) {
     var codeText = text.match(codeReg);
