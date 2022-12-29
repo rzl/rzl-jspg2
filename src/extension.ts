@@ -5,7 +5,7 @@ import initCommands from './commands';
 import { reportError } from './utils/report';
 import { getWorkspaceFolders, setContextValue } from './utils/host';
 import { ResponseOutlineProvider } from './helper/ResponseOutline';
-import { activeCode, getColumns, getFormItem, getQueryInfo, resolveCode } from './utils/jspg2';
+import { activeCode, getColumns, getFormItem, getQueryInfo } from './utils/jspg2';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
