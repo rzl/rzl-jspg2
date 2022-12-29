@@ -7,6 +7,10 @@ import { reportError, reportInfo } from './report';
 export const codeReg = /(?<=\/\*\*\*\*\*jspg2 code start jspg2\*\*\*\*\*\/\s*\n)[\s\S]+(?=\n\s*\/\*\*\*\*\*jspg2 code end jspg2\*\*\*\*\*\/)/gi;
 export const listReg = /(?<=\/\*\*\*\*\*jspg2 list start jspg2\*\*\*\*\*\/\s*\n)[\s\S]+(?=\n\s*\/\*\*\*\*\*jspg2 list end jspg2\*\*\*\*\*\/)/gi;
 export const formReg = /(?<=\/\*\*\*\*\*jspg2 form start jspg2\*\*\*\*\*\/\s*\n)[\s\S]+(?=\n\s*\/\*\*\*\*\*jspg2 form end jspg2\*\*\*\*\*\/)/gi;
+export function activeCode(){
+    var text = vscode.window.activeTextEditor?.document.getText();
+    return resolveCode(text);
+}
 
 export function resolveCode(text) {
     var codeText = text.match(codeReg);
@@ -49,6 +53,36 @@ export function resolveForm(text) {
     }
 }
 
+export async function getFormItem(code = '') {
+    if (!code) { return {}; }
+    var request = await getRequest();
+    var res = await request.service.get('/online/cgform/api/getFormItem/' + code);
+    logger.info('get getFormItem res ' + JSON.stringify(res, null, 4));
+    if (res.code !== 0 && res.code !== 200) {
+        throw new Error(res.message);
+    }
+    return res;
+}
+export async function getColumns(code = '') {
+    if (!code) { return {}; }
+    var request = await getRequest();
+    var res = await request.service.get('/online/cgform/api/getColumns/' + code);
+    logger.info('get getColumns res ' + JSON.stringify(res, null, 4));
+    if (res.code !== 0 && res.code !== 200) {
+        throw new Error(res.message);
+    }
+    return res;
+}
+export async function getQueryInfo(code = '') {
+    if (!code) { return {}; }
+    var request = await getRequest();
+    var res = await request.service.get('/online/cgform/api/getQueryInfo/' + code);
+    logger.info('get getQueryInfo res ' + JSON.stringify(res, null, 4));
+    if (res.code !== 0 && res.code !== 200) {
+        throw new Error(res.message);
+    }
+    return res;
+}
 export async function getEnhanceJs(code, type) {
     var request = await getRequest();
     var res = await request.service.get('/online/cgform/head/enhanceJs/' + code, { params: { type } });

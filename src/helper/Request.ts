@@ -99,6 +99,7 @@ export default class Request {
             break;
         }
       }
+      logger.log(JSON.stringify(error.response))
       return Promise.reject(error);
     }
     );
