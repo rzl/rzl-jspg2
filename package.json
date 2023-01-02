@@ -2,7 +2,7 @@
   "name": "rzl-jspg2",
   "displayName": "rzl-jspg2",
   "description": "rzl-jspg2",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "publisher": "rzl",
   "icon": "R.png",
   "engines": {
@@ -51,6 +51,11 @@
 				}
 			],
       "editor/context": [
+        {
+          "when": "rzl-jspg2.enabled",
+          "command": "rzl-jspg2.loadCode",
+          "group": "navigation"
+        },
         {
           "when": "rzl-jspg2.enabled",
           "command": "rzl-jspg2.createConfig",
@@ -150,6 +155,11 @@
       {
         "command": "rzl-jspg2.createConfig",
         "title": "create config",
+        "category": "rzl-jspg2"
+      },
+      {
+        "command": "rzl-jspg2.loadCode",
+        "title": "load code",
         "category": "rzl-jspg2"
       },
       {

@@ -67,6 +67,14 @@ export function promptForPassword(prompt: string): Promise<string | undefined> {
   }) as Promise<string | undefined>;
 }
 
+export function promptForInput(prompt: string): Promise<string | undefined> {
+  return vscode.window.showInputBox({
+    ignoreFocusOut: true,
+    password: false,
+    prompt,
+  }) as Promise<string | undefined>;
+}
+
 export function setContextValue(key: string, value: any) {
   console.log('setContext', prefix + '.' + key, value);
   executeCommand('setContext', prefix + '.' + key, value);
