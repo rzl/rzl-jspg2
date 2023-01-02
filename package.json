@@ -2,7 +2,7 @@
   "name": "rzl-jspg2",
   "displayName": "rzl-jspg2",
   "description": "rzl-jspg2",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "rzl",
   "icon": "R.png",
   "engines": {
@@ -34,10 +34,22 @@
           "id": "getQueryInfo",
           "name": "getQueryInfo",
           "when": "rzl-jspg2.enabled"
+        },
+        {
+          "id": "onlineExplorer",
+          "name": "onlineExplorer",
+          "when": "rzl-jspg2.enabled"
         }
       ]
     },
     "menus": {
+      "view/title": [
+				{
+					"command": "onlineExplorer.refresh",
+					"when": "view == onlineExplorer",
+					"group": "navigation"
+				}
+			],
       "editor/context": [
         {
           "when": "rzl-jspg2.enabled",
@@ -90,6 +102,16 @@
 					"dark": "resources/dark/refresh.svg"
 				}
 			},
+      {
+        "command": "onlineExplorer.openResource",
+        "title": "openResource",
+        "category": "rzl-jspg2"
+      },
+      {
+        "command": "onlineExplorer.refresh",
+        "title": "refresh",
+        "category": "rzl-jspg2"
+      },
       {
         "command": "rzl-jspg2.setDefaultTemplate",
         "title": "set default template",

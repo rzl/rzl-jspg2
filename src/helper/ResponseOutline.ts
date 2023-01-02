@@ -27,7 +27,7 @@ export class ResponseOutlineProvider implements vscode.TreeDataProvider<number> 
 			this._onDidChangeTreeData.fire(undefined);
 		}
 	}
-
+	
 	private onActiveEditorChanged(): void {
 		if (vscode.window.activeTextEditor) {
 			this.refresh();

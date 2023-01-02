@@ -53,6 +53,21 @@ export function resolveForm(text) {
     }
 }
 
+export async function getCgformHeadList(params = {}) {
+    var request = await getRequest();
+    Object.assign(params, {
+        pageSize: 10000,
+        column: 'tableName',
+        order: 'asc'
+    });
+    var res = await request.service.get('/online/cgform/head/list', {params});
+    logger.info('get getCgformHeadList res ' + JSON.stringify(res, null, 4));
+    if (res.code !== 0 && res.code !== 200) {
+        throw new Error(res.message);
+    }
+    return res;
+}
+
 export async function getFormItem(code = '') {
     if (!code) { return {}; }
     var request = await getRequest();
@@ -178,26 +193,23 @@ export const defaultTemplate = `({
 
     /*****jspg2 list start jspg2*****/
 
-
     afterLoadData(that) {
 
     }
-
-
 
     /*****jspg2 list end jspg2*****/
     ,
     /*****jspg2 form start jspg2*****/
 
     beforeSubmit() {
-        return new Promise(rs, rj) {
+        return new Promise((rs, rj) {
 
-        }
+        })
     },
     afterSubmit() {
-        return new Promise(rs, rj) {
-            
-        }
+        return new Promise((rs, rj) {
+
+        })
     }
 
 
