@@ -1,17 +1,11 @@
 import * as vscode from 'vscode';
 import {
-  getWorkspaceFolders,
-  showConfirmMessage,
-  showOpenDialog,
-  openFolder,
-  addWorkspaceFolder,
   promptForInput,
   showTextDocument
 }
   from '../utils/host';
 import * as fse from 'fs-extra';
 
-import { Config, defaultConfig, CONFIG_PATH } from '../helper/Config';
 import { getFormItem, replaceLocalText } from '../utils/jspg2';
 import { getActiveWorkspace } from '../workspace';
 import path = require('path');
