@@ -7,6 +7,7 @@ import { getWorkspaceFolders, setContextValue } from './utils/host';
 import { ResponseOutlineProvider } from './helper/ResponseOutline';
 import { activeCode, getColumns, getFormItem, getQueryInfo } from './utils/jspg2';
 import { OnlineExplorer } from './helper/OnlineExplorer';
+import { thatCompletionProvider } from './utils/completion';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -38,14 +39,17 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	setContextValue('enabled', true);
-	const getFormItemProvider = new ResponseOutlineProvider(context, _ =>  getFormItem(activeCode()));
-	vscode.window.registerTreeDataProvider('getFormItem', getFormItemProvider);
-	const getColumnsProvider = new ResponseOutlineProvider(context, _ =>  getColumns(activeCode()));
-	vscode.window.registerTreeDataProvider('getColumns', getColumnsProvider);
-	const getQueryInfoProvider = new ResponseOutlineProvider(context, _ =>  getQueryInfo(activeCode()));
-	vscode.window.registerTreeDataProvider('getQueryInfo', getQueryInfoProvider);
+	// const getFormItemProvider = new ResponseOutlineProvider(context, _ =>  getFormItem(activeCode()));
+	// vscode.window.registerTreeDataProvider('getFormItem', getFormItemProvider);
+	// const getColumnsProvider = new ResponseOutlineProvider(context, _ =>  getColumns(activeCode()));
+	// vscode.window.registerTreeDataProvider('getColumns', getColumnsProvider);
+	// const getQueryInfoProvider = new ResponseOutlineProvider(context, _ =>  getQueryInfo(activeCode()));
+	// vscode.window.registerTreeDataProvider('getQueryInfo', getQueryInfoProvider);
 	// vscode.commands.registerCommand('jsonOutline.refresh', () => jsonOutlineProvider.refresh());
 	new OnlineExplorer(context);
+	context.subscriptions.push(thatCompletionProvider);
+
+	
 }
 
 // This method is called when your extension is deactivated

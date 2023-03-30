@@ -9,6 +9,7 @@ import {
  from '../utils/host';
 
 import { Config, defaultConfig, CONFIG_PATH } from '../helper/Config';
+// eslint-disable-next-line @typescript-eslint/naming-convention
 var config = new Config({ defaultConfig, CONFIG_PATH});
 
 export default {

@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
+import { putLocalText } from '../utils/jspg2';
 import { reportError } from '../utils/report';
-import { replaceLocalText } from '../utils/jspg2';
-
 export default {
-  name: 'getForm',
+  name: 'put',
   async handle() {
-    vscode.window.showInformationMessage('getForm!');
+    vscode.window.showInformationMessage('put!');
     try {
-      await replaceLocalText('form');
+      await putLocalText('list');
+      await putLocalText('form');
     } catch (e) {
       reportError(e.message);
     }

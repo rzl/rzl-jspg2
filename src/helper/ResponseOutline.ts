@@ -47,10 +47,16 @@ export class ResponseOutlineProvider implements vscode.TreeDataProvider<number> 
 	}
 
 	private async parseTree(): Promise<void> {
-		this.text = '';
-		this.tree = undefined;
-		this.text = JSON.stringify(await this.getData(), null, 4);
-		this.tree = json.parseTree(this.text);
+		try {
+
+			this.text = '';
+			this.tree = undefined;
+			this.text = JSON.stringify(await this.getData(), null, 4);
+			this.tree = json.parseTree(this.text);
+		} catch(e) {
+			this.tree = json.parseTree('');
+
+		}
 
 	}
 

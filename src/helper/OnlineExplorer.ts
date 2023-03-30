@@ -7,6 +7,7 @@ import * as fse from 'fs-extra';
 import { showTextDocument } from '../utils/host';
 import { reportError } from '../utils/report';
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export interface onlineNode {
 	copyType: number;
 	copyVersion: any;
@@ -58,6 +59,8 @@ export class OnlineModel {
 		return new Promise((c, e) => {
 			getCgformHeadList({ copyType: 0 }).then((res) => {
 				c(res.result.records);
+			}).catch(() => {
+				c([]);
 			});
 		});
 	}
@@ -66,6 +69,8 @@ export class OnlineModel {
 		return new Promise((c, e) => {
 			getCgformHeadList({ physicId: node.id, copyType: 1 }).then((res) => {
 				c(res.result.records);
+			}).catch(() => {
+				c([]);
 			});
 		});
 	}
@@ -121,11 +126,11 @@ export class OnlineExplorerProvider implements vscode.TreeDataProvider<onlineNod
 				this.refresh();
 			}
 			if (element) {
-				rs(this.model.getChildren(element))
+				rs(this.model.getChildren(element));
 			} else {
 
 				let d = await this.model.roots();
-				let dd = [...d]
+				let dd = [...d];
 				for (let a = 0; a < dd.length; a++) {
 
 					//await this.viewer.reveal(dd[a], {expand: 0});
@@ -134,9 +139,9 @@ export class OnlineExplorerProvider implements vscode.TreeDataProvider<onlineNod
 				setTimeout(() => {
 
 					rs(d);
-				}, 2000)
+				}, 2000);
 			}
-		})
+		});
 	}
 
 	public getParent(element: onlineNode): onlineNode | undefined {
@@ -219,7 +224,7 @@ export class OnlineExplorer {
 							showTextDocument(vscode.Uri.file(filePath)).then(async () => {
 								await replaceLocalText('list');
 								await replaceLocalText('form');
-							})
+							});
 						});
 				})
 				.catch(reportError);
