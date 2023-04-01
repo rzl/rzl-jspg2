@@ -7,7 +7,7 @@ export default {
   async handle() {
     vscode.window.showInformationMessage('put!');
     try {
-      await putLocalText('list');
+      await putLocalText();
     } catch (e) {
       reportError(e.message);
     }

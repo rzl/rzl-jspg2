@@ -222,8 +222,8 @@ export class OnlineExplorer {
 						)
 						.then(() => {
 							showTextDocument(vscode.Uri.file(filePath)).then(async () => {
-								await replaceLocalText('list');
-								await replaceLocalText('form');
+								await replaceLocalText();
+								await replaceLocalText();
 							});
 						});
 				})

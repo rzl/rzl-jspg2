@@ -12,8 +12,8 @@ const FORMITEM_BASE_NAME = 'formItem';
 const QUERYINFO_BASE_NAME = 'queryInfo';
 const LIST_BASE_NAME = 'list';
 const FORM_BASE_NAME = 'form';
-const LIST_HISTORY_BASE_NAME = 'list-';
-const FORM_HISTORY_BASE_NAME = 'form-';
+export const LIST_HISTORY_BASE_NAME = 'list-';
+export const FORM_HISTORY_BASE_NAME = 'form-';
 
 export const reg =
   /(?<=\/\*\*\*MMM\*\*\*  START  \*\*\*MMM\*\*\*\/\s*\n)[\s\S]+(?=\n\s*\/\*\*\*WWW\*\*\*   END   \*\*\*WWW\*\*\*\/)/gi;
@@ -151,6 +151,18 @@ export async function getEnhanceJs(code, type) {
   return res;
 }
 
+export async function getEnhanceJsHistory(code, type) {
+  var request = await getRequest();
+  var res = await request.service.get("/online/cgform/head/enhanceJs/getHistory/" + code, {
+    params: { type },
+  });
+  logger.info("get list res " + JSON.stringify(res, null, 4));
+  if (res.code !== 200) {
+    throw new Error(res.message);
+  }
+  return res;
+}
+
 export async function putEnhanceJs(code, type, text) {
   var res = await getEnhanceJs(code, type);
   var request = await getRequest();
@@ -206,9 +218,9 @@ export async function putLocalText() {
       type = 'list'
     } else if (filePath.name == FORM_BASE_NAME) {
       type = 'form'
-    } else if (filePath.name.startsWith(LIST_HISTORY_BASE_NAME) {
+    } else if (filePath.name.startsWith(LIST_HISTORY_BASE_NAME)) {
       type = 'list'
-    } else if (filePath.name.startsWith(FORM_HISTORY_BASE_NAME) {
+    } else if (filePath.name.startsWith(FORM_HISTORY_BASE_NAME)) {
       type = 'form'
     }
     if (type) {
@@ -240,10 +252,11 @@ export async function replaceLocalText() {
       fn = getColumns(code)
     } else if (filePath.name == FORMITEM_BASE_NAME) {
       fn = getFormItem(code)
-    
     } else if (filePath.name == QUERYINFO_BASE_NAME) {
       fn = getQueryInfo(code)
-    }    
+    } else {
+       return reportError('改文件不支持此指令')
+    }
     var res = await fn;
     var newText
     if ([LIST_BASE_NAME,FORM_BASE_NAME ].includes(filePath.name)) {

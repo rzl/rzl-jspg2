@@ -3,13 +3,16 @@ import { promptForInput, showTextDocument } from "../utils/host";
 import * as fse from "fs-extra";
 import signMd5Utils from "../utils/signMd5Utils";
 import {
+  FORM_HISTORY_BASE_NAME,
   getCgformHeadList,
   getColumns,
   getEnhanceJs,
+  getEnhanceJsHistory,
   getErpFormItem,
   getFormItem,
   getQueryInfo,
   listTemplate,
+  LIST_HISTORY_BASE_NAME,
   //  replaceLocalText,
 } from "../utils/jspg2";
 import { getActiveWorkspace } from "../workspace";
@@ -112,6 +115,35 @@ export default {
             });
           });
         }).catch(reportError);
+
+        var formHistory = await getEnhanceJsHistory(code, "form")
+        formHistory.result.forEach((row) => {
+          let newName = FORM_HISTORY_BASE_NAME + row.cgformHistoryDate.replace(/[\s:-]/ig, '') + '.js'
+          let newPath = path.join(codeDir, 'history', 'form', newName);
+
+          fse.pathExists(newPath).then(async (exist) => {
+            if (!exist) {
+              await fse.outputFile(
+                newPath,
+                listTemplate(row.cgformJsHistory),
+                )
+              }
+          }).catch(reportError);
+        })
+        var listHistory = await getEnhanceJsHistory(code, "list")
+        listHistory.result.forEach((row) => {
+          let newName = LIST_HISTORY_BASE_NAME + row.cgformHistoryDate.replace(/[\s:-]/ig, '') + '.js'
+          let newPath = path.join(codeDir, 'history', 'list', newName);
+
+          fse.pathExists(newPath).then((exist) => {
+            if (!exist) {
+              fse.outputFile(
+                newPath,
+                listTemplate(row.cgformJsHistory),
+                )
+              }
+          }).catch(reportError);
+        })
       }
     });
   },
