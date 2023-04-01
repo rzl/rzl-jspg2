@@ -16,7 +16,6 @@ export const defaultConfig = {
   password: '',
   token: '',
   enable: true,
-  autoSave: true,
   timeout: 6000,
   headers: {
     // eslint-disable-next-line @typescript-eslint/naming-convention

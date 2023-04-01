@@ -228,7 +228,7 @@ export async function putLocalText() {
       var data = resolve(text);
       await putEnhanceJs(code, type, data);
     } else {
-      reportInfo("该文件不支持 put " + type + " done");
+      reportError("该文件不支持 put " + type + " done");
       return 
     }
     reportInfo("put " + type + " done");
@@ -255,7 +255,8 @@ export async function replaceLocalText() {
     } else if (filePath.name == QUERYINFO_BASE_NAME) {
       fn = getQueryInfo(code)
     } else {
-       return reportError('改文件不支持此指令')
+      reportError("该文件不支持 get " + filePath.name + " done");
+      return 
     }
     var res = await fn;
     var newText
