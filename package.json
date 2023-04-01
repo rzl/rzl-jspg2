@@ -79,12 +79,12 @@
       },
       {
         "command": "rzl-jspg2.get",
-        "title": "get all",
+        "title": "get",
         "category": "rzl-jspg2"
       },
       {
         "command": "rzl-jspg2.put",
-        "title": "put all",
+        "title": "put",
         "category": "rzl-jspg2"
       },
       {

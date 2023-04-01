@@ -3,13 +3,14 @@ import { promptForInput, showTextDocument } from "../utils/host";
 import * as fse from "fs-extra";
 import signMd5Utils from "../utils/signMd5Utils";
 import {
+  getCgformHeadList,
   getColumns,
   getEnhanceJs,
   getErpFormItem,
   getFormItem,
   getQueryInfo,
   listTemplate,
-  replaceLocalText,
+  //  replaceLocalText,
 } from "../utils/jspg2";
 import { getActiveWorkspace } from "../workspace";
 import path = require("path");
@@ -21,6 +22,17 @@ export default {
     promptForInput("请输入code").then(async (code) => {
       let workspace = getActiveWorkspace()?.uri.fsPath;
       if (workspace) {
+        if (code!.length<30) {
+          let res = await getCgformHeadList({tableName: code})
+            if (res.result.records.length>0) {
+              var row = res.result.records[0]
+              code = row.id
+            } else {
+              reportError(`未找到表 ${code}`)
+            }
+        } else { 
+
+        }
         let formItem = await getFormItem(code);
         let columns = await getColumns(code);
         let queryInfo = await getQueryInfo(code);

@@ -4,8 +4,8 @@ import * as vscode from 'vscode';
 import initCommands from './commands';
 import { reportError } from './utils/report';
 import { getWorkspaceFolders, setContextValue } from './utils/host';
-import { ResponseOutlineProvider } from './helper/ResponseOutline';
-import { activeCode, getColumns, getFormItem, getQueryInfo } from './utils/jspg2';
+//  import { ResponseOutlineProvider } from './helper/ResponseOutline';
+//  import { activeCode, getColumns, getFormItem, getQueryInfo } from './utils/jspg2';
 import { OnlineExplorer } from './helper/OnlineExplorer';
 import { thatCompletionProvider } from './utils/completion';
 

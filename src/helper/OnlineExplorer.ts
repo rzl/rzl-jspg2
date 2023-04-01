@@ -213,7 +213,7 @@ export class OnlineExplorer {
 			fse.pathExists(filePath)
 				.then(exist => {
 					if (exist) {
-						return showTextDocument(vscode.Uri.file(filePath));
+						showTextDocument(vscode.Uri.file(filePath));
 					}
 
 					return fse.outputFile(

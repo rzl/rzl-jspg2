@@ -1,13 +1,13 @@
 import * as vscode from 'vscode';
-import Vue from 'vue';
+//  import Vue from 'vue';
 
 
-var that =  new Vue();
+//var that =  new Vue();
 export const thatCompletionProvider = vscode.languages.registerCompletionItemProvider(
     'javascript',
     {
         provideCompletionItems(document: vscode.TextDocument, position: vscode.Position) {
-
+            //console.log(that)
             // get all text until the `position` and check if it reads `console.`
             // and if so then complete if `log`, `warn`, and `error`
             const linePrefix = document.lineAt(position).text.substr(0, position.character).trim();

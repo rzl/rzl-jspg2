@@ -1,12 +1,19 @@
 /* eslint-disable curly */
 import * as vscode from "vscode";
 import { getRequest } from "../workspace";
-import { getValidFullRange } from "./host";
+import { fullReplace, getValidFullRange } from "./host";
 import logger from "./logger";
 import { reportError, reportInfo } from "./report";
 import path = require("path");
 import * as fse from "fs-extra";
 
+const COLUMNS_BASE_NAME = 'columns';
+const FORMITEM_BASE_NAME = 'formItem';
+const QUERYINFO_BASE_NAME = 'queryInfo';
+const LIST_BASE_NAME = 'list';
+const FORM_BASE_NAME = 'form';
+const LIST_HISTORY_BASE_NAME = 'list-';
+const FORM_HISTORY_BASE_NAME = 'form-';
 
 export const reg =
   /(?<=\/\*\*\*MMM\*\*\*  START  \*\*\*MMM\*\*\*\/\s*\n)[\s\S]+(?=\n\s*\/\*\*\*WWW\*\*\*   END   \*\*\*WWW\*\*\*\/)/gi;
@@ -18,18 +25,18 @@ export function activeCode() {
 export function resolveCode() {
   let activeTextEditor = vscode.window.activeTextEditor;
   if (activeTextEditor) {
-    var currentPath = activeTextEditor.document.uri.path;
+    var currentPath = activeTextEditor.document.uri.fsPath;
     var filePath = path.parse(currentPath);
     var codePath;
-    if (['columns', 'formitem', 'queryInfo'].includes(filePath.name)) {
+    if ([COLUMNS_BASE_NAME, FORMITEM_BASE_NAME, QUERYINFO_BASE_NAME].includes(filePath.name)) {
       codePath = filePath.dir;
-    } else if (['list', 'form'].includes(filePath.name)) {
+    } else if ([LIST_BASE_NAME, FORM_BASE_NAME].includes(filePath.name)) {
       codePath = path.join(filePath.dir, 'data');
     } else {
-      codePath = path.join(filePath.dir, '..', '..');
+      codePath = path.join(filePath.dir, '..', '..', 'data');
     }
     var codeFilePath = path.join(codePath, 'code.json');
-    if (fse.pathExistsSync(codeFilePath)) {
+    if (fse.existsSync(codeFilePath)) {
       try {
         var obj = fse.readJSONSync(codeFilePath);
         return obj.code;
@@ -66,13 +73,13 @@ export function resolveForm(text) {
   }
 }
 
-export async function getCgformHeadList(params = {}) {
+export async function getCgformHeadList(params = {}, other = {}){
   var request = await getRequest();
   Object.assign(params, {
     pageSize: 10000,
     column: "tableName",
     order: "asc",
-  });
+  }, other);
   var res = await request.service.get("/online/cgform/head/list", { params });
   logger.info("get getCgformHeadList res " + JSON.stringify(res, null, 4));
   if (res.code !== 0 && res.code !== 200) {
@@ -116,7 +123,7 @@ export async function getColumns(code = "") {
   }
   return res;
 }
-export async function getQueryInfo(code = "") {
+export async function getQueryInfo(code) {
   if (!code) return {};
   var request = await getRequest();
   var res = await request.service.get(
@@ -186,39 +193,68 @@ export async function postEnhanceJs(code, type, text) {
   return res;
 }
 
-export async function putLocalText(type) {
+export async function putLocalText() {
   let activeTextEditor = vscode.window.activeTextEditor;
   if (activeTextEditor) {
+    var currentPath = activeTextEditor.document.uri.path;
+    var filePath = path.parse(currentPath);
     var text = activeTextEditor.document.getText();
     var code = resolveCode();
-    var resolve = type === "list" ? resolveList : resolveForm;
-    var listText = resolve(text);
-    await putEnhanceJs(code, type, listText);
+    
+    var type
+    if (filePath.name == LIST_BASE_NAME) {
+      type = 'list'
+    } else if (filePath.name == FORM_BASE_NAME) {
+      type = 'form'
+    } else if (filePath.name.startsWith(LIST_HISTORY_BASE_NAME) {
+      type = 'list'
+    } else if (filePath.name.startsWith(FORM_HISTORY_BASE_NAME) {
+      type = 'form'
+    }
+    if (type) {
+      var resolve = filePath.name === "list" ? resolveList : resolveForm;
+      var data = resolve(text);
+      await putEnhanceJs(code, type, data);
+    } else {
+      reportInfo("该文件不支持 put " + type + " done");
+      return 
+    }
     reportInfo("put " + type + " done");
   }
 }
 
-export async function replaceLocalText(type) {
+export async function replaceLocalText() {
   let activeTextEditor = vscode.window.activeTextEditor;
   if (activeTextEditor) {
+    var currentPath = activeTextEditor.document.uri.path;
+    var filePath = path.parse(currentPath);
     var text = activeTextEditor.document.getText();
-    resolveText(text, type);
     var code = resolveCode();
-    var res = await getEnhanceJs(code, type);
-    var newText = text.replace(reg, res.result.cgJs);
-    let validFullRange = getValidFullRange(activeTextEditor);
-    await (new Promise((rs, rj) => {
-      vscode.window.activeTextEditor?.edit(async (editBuilder) => {
-        try {
-          editBuilder.replace(validFullRange, newText);
-          await vscode.window.activeTextEditor?.document.save();
-          rs(null);
-        } catch (e) {
-          reportError(e.message);
-        }
-      });
-    }));
-    reportInfo("get " + type + " done");
+    var fn
+
+    if (filePath.name == LIST_BASE_NAME) {
+      fn = getEnhanceJs(code, 'list');
+    } else if (filePath.name == FORM_BASE_NAME) {
+      fn = getEnhanceJs(code, 'form');
+    } else if (filePath.name == COLUMNS_BASE_NAME) {
+      fn = getColumns(code)
+    } else if (filePath.name == FORMITEM_BASE_NAME) {
+      fn = getFormItem(code)
+    
+    } else if (filePath.name == QUERYINFO_BASE_NAME) {
+      fn = getQueryInfo(code)
+    }    
+    var res = await fn;
+    var newText
+    if ([LIST_BASE_NAME,FORM_BASE_NAME ].includes(filePath.name)) {
+      newText = text.replace(reg, res.result.cgJs);
+    } else {
+      newText = JSON.stringify(res, null, 4)
+    }
+    if (newText) {
+      await fullReplace(activeTextEditor, newText)
+    }
+    reportInfo("get " + filePath.name + " done");
   }
 }
 

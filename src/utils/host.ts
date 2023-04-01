@@ -128,8 +128,27 @@ export function addWorkspaceFolder(...workspaceFoldersToAdd: { uri: vscode.Uri; 
   return vscode.workspace.updateWorkspaceFolders(0, 0, ...workspaceFoldersToAdd);
 }
 
-export function getValidFullRange(activeTextEditor){
-  let invalidRange = new vscode.Range(0, 0, activeTextEditor.document.lineCount, 0); 
+export function getValidFullRange(activeTextEditor) {
+  let invalidRange = new vscode.Range(0, 0, activeTextEditor.document.lineCount, 0);
   return activeTextEditor?.document.validateRange(invalidRange);
-  
+
+}
+
+export function fullReplace(activeTextEditor: vscode.TextEditor, newText) {
+  let validFullRange = getValidFullRange(activeTextEditor);
+  return new Promise((rs, rj) => {
+    activeTextEditor.edit(async (editBuilder) => {
+      try {
+        editBuilder.replace(validFullRange, newText);
+        setTimeout(async () => {
+          
+          await activeTextEditor.document.save()
+          console.log('a')
+          rs(null);
+        }, 100);
+      } catch (e) {
+        rj(e)
+      }
+    });
+  });
 }
