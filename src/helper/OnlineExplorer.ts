@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
 // import { basename, dirname, join } from 'path';
-import { getCgformHeadList, replaceLocalText } from '../utils/jspg2';
+import { getCgformHeadList } from '../utils/jspg2';
 import { getActiveWorkspace } from '../workspace';
-import path = require('path');
-import * as fse from 'fs-extra';
-import { showTextDocument } from '../utils/host';
-import { reportError } from '../utils/report';
+// import path = require('path');
+// import * as fse from 'fs-extra';
+// import { showTextDocument } from '../utils/host';
+// import { reportError } from '../utils/report';
 import { loadCode } from '../commands/command.loadCode';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -160,14 +160,12 @@ export class OnlineExplorerProvider implements vscode.TreeDataProvider<onlineNod
 export class OnlineExplorer {
 
 	private ftpViewer: vscode.TreeView<onlineNode>;
-	private treeDataProvider: OnlineExplorerProvider;
 
 
 	constructor(context: vscode.ExtensionContext) {
 		/* Please note that login information is hardcoded only for this example purpose and recommended not to do it in general. */
 		const onlineModel = new OnlineModel();
 		const treeDataProvider = new OnlineExplorerProvider(onlineModel);
-		this.treeDataProvider = treeDataProvider;
 		context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('online', treeDataProvider));
 
 		this.ftpViewer = vscode.window.createTreeView('onlineExplorer', { treeDataProvider });
