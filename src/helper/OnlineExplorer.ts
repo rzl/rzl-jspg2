@@ -6,6 +6,7 @@ import path = require('path');
 import * as fse from 'fs-extra';
 import { showTextDocument } from '../utils/host';
 import { reportError } from '../utils/report';
+import { loadCode } from '../commands/command.loadCode';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export interface onlineNode {
@@ -178,56 +179,6 @@ export class OnlineExplorer {
 	}
 
 	private openResource(resource: onlineNode): void {
-		let defaultTemplate = `({
-	/*****jspg2 code start jspg2*****/
-	jspgCode: '${resource.id}',
-	/*****jspg2 code end jspg2*****/
-
-	/*****jspg2 list start jspg2*****/
-
-	afterLoadData(that) {
-
-	}
-
-	/*****jspg2 list end jspg2*****/
-	,
-	/*****jspg2 form start jspg2*****/
-
-	beforeSubmit() {
-		return new Promise((rs, rj){
-			rs()
-		})
-	},
-	afterSubmit() {
-		return new Promise((rs, rj){
-			rs()
-		})
-	}
-
-
-	/*****jspg2 form end jspg2*****/
-
-})`;
-		if (this.treeDataProvider.lastWorkspace) {
-			var filePath = path.join(this.treeDataProvider.lastWorkspace, resource.tableName + '.js');
-			fse.pathExists(filePath)
-				.then(exist => {
-					if (exist) {
-						showTextDocument(vscode.Uri.file(filePath));
-					}
-
-					return fse.outputFile(
-							filePath,
-							defaultTemplate,
-						)
-						.then(() => {
-							showTextDocument(vscode.Uri.file(filePath)).then(async () => {
-								await replaceLocalText();
-								await replaceLocalText();
-							});
-						});
-				})
-				.catch(reportError);
-		}
+		loadCode(resource.id)
 	}
 }
